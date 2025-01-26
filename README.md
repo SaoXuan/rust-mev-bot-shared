@@ -126,7 +126,10 @@ compute_unit_limit: 180000
 ```
 
 ## 运行方式
-
+赋予程序读写权限
+```bash
+chmod +x rust-mev-bot
+```
 普通模式运行：
 ```bash
 ./rust-mev-bot
