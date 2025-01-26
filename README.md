@@ -8,6 +8,8 @@
 - 当前版本，需要用户自行启动Jupiter，定时重启等相关的脚本需要自写，作者会后续支持相关能力，以及k3s集群部署方案
 - 此bot收费比例为你的净利润的10%，如果赚不到钱，请不要使用，请不要使用，请不要使用！
 - 小费规则：(毛利润-GasFee-jito小费)*0.1
+- [作者钱包监控地址](https://solscan.io/account/F1gnxS6Csq8pyApuogH2R6z5TqShwu3o7DMTm5WUphJ7)
+- [小费收益](https://solscan.io/account/BUp6bo7x5UG3Xq8KSrnFwGbuzFJHsJcQ5vMnb9LwR7G4)
 ## 主要功能
 
 - 自动化套利交易
