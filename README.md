@@ -160,6 +160,8 @@ chmod +x rust-mev-bot
    - Rpc: 仅使用 RPC
    - Grpc: 仅使用 gRPC
 
+## 相关链接
+[Discard](https://discord.gg/JpKMm7uj)
 ## 安全建议
 
 - 使用独立的套利钱包
