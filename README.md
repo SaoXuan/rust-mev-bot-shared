@@ -10,6 +10,8 @@
 - 小费规则：(毛利润-GasFee-jito小费)*0.1
 - [作者钱包监控地址](https://solscan.io/account/F1gnxS6Csq8pyApuogH2R6z5TqShwu3o7DMTm5WUphJ7)
 - [小费收益](https://solscan.io/account/BUp6bo7x5UG3Xq8KSrnFwGbuzFJHsJcQ5vMnb9LwR7G4)
+- [群友制作dune-daily](https://dune.com/queries/4632156/7715285/2c559022-b479-4614-926b-ae7d67dfe39f)
+- [群友制作dune-pre-day](https://dune.com/queries/4646483/7737654/5a560eb5-e9d9-4f1c-808a-3f38d0fe6c02)
 ## 主要功能
 
 - 自动化套利交易
