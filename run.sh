@@ -68,7 +68,7 @@ check_required_files() {
 # 设置文件权限
 setup_file_permissions() {
     log_info "设置文件权限..."
-    chmod +x jupiter-swap-api run-jup.sh kill-jup.sh mints-query.sh 2>/dev/null || true
+    chmod +x rust-mev-bot jupiter-swap-api run-jup.sh kill-jup.sh mints-query.sh 2>/dev/null || true
 }
 
 # 获取重启间隔时间（分钟）
