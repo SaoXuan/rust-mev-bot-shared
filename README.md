@@ -179,6 +179,9 @@ trade_range:
   - 500000000    # 0.5 SOL
   - 600000000    # 0.6 SOL
   - 700000000    # 0.7 SOL
+  - 800000000    # 0.8 SOL
+  - 900000000    # 0.9 SOL
+  - 1000000000   # 1 SOL
 #发送交易类型，建议选择Mixed，可选Rpc,Grpc,Mixed，选择Mixed可以让你的ip限制速率翻倍
 rpc_type: Mixed
 #blockhash rpc类型，建议选择Rpc，可选Grpc,Rpc，当前实现Grpc不是订阅的，等改成订阅的再选用Grpc
