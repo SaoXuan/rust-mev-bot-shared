@@ -79,7 +79,7 @@ blockhash_cache_enabled: true
 #block缓存过期时间，单位ms，缓存1s没啥问题，降低下节点压力
 blockhash_cache_ttl_ms: 1000
 #性能相关，开启多少个线程,系统负载全靠这个控制
-thread_count: 8
+thread_count: 4
 #每个线程里多少个网络IO，可以一个线程配2个左右，具体看性能，自行调试，作者也不知道多少是好的
 max_concurrent: 4
 
