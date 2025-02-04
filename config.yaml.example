@@ -15,7 +15,8 @@ jupiter_webserver: 2
 #jup的更新线程数
 jupiter_update: 2
 #自动重启时间，设置为0不会重启，单位为分钟
-auto_restart: 0
+auto_restart: 30
+#________________以上为jup相关配置内容_______________
 # grpc token，如果你得gprc有token验证，可以在这里配置上
 yellowstone_grpc_token: ""
 # 从birdeye api 加载代币，最大加载50个代币,需要自己配置key，可以去注册一个账号key免费https://bds.birdeye.so/
