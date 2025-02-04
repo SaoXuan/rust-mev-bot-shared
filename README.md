@@ -263,18 +263,52 @@ compute_unit_limit: 180000
 ```
 
 ## 运行方式
-赋予程序读写权限
+创建一个bot文件夹
 ```bash
-chmod +x rust-mev-bot
+mkdir bot
 ```
-普通模式运行：
 ```bash
-./rust-mev-bot
+cd bot
+```
+Install wget：
+```bash
+sudo apt update
+```
+```bash
+sudo apt install wget
+```
+install unzip
+```bash
+sudo apt install unzip
+```
+下载发布版本
+```bash
+wget https://sourceforge.net/projects/rust-mev-bot/files/rust-mev-bot-1.0.0.zip
+```
+解压
+```bash
+unzip rust-mev-bot-1.0.0.zip
+```
+更新版本
+```bash
+chmod +x upgrade.sh
+```
+```bash
+./upgrade.sh
+```
+
+将config.yaml.example 重命名为config.yaml 并配置上相关参数
+```bash
+mv config.yaml.example config.yaml
+```
+正常模式运行
+```bash
+./run.sh
 ```
 
 调试模式运行（输出详细日志）：
 ```bash
-./rust-mev-bot debug
+./run.sh debug
 ```
 
 ## 监控和日志
