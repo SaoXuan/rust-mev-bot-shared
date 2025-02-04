@@ -264,7 +264,10 @@ merge_and_filter_tokens() {
 
     # 过滤和去重
     if [ -f "$temp_file" ]; then
-        # 只做去重，不做格式验证
+        # 添加 SOL 代币地址到临时文件
+        echo "So11111111111111111111111111111111111111112" >> "$temp_file"
+        
+        # 去重并排序
         local valid_tokens
         valid_tokens=$(cat "$temp_file" | sort -u)
 
@@ -272,11 +275,6 @@ merge_and_filter_tokens() {
             log_error "过滤后没有任何有效的token地址"
             rm -f "$temp_file"
             return 1
-        fi
-
-        # 确保包含 SOL 代币
-        if ! echo "$valid_tokens" | grep -q "So11111111111111111111111111111111111111112"; then
-            valid_tokens="So11111111111111111111111111111111111111112"$'\n'"$valid_tokens"
         fi
 
         # 转换为JSON数组格式并写入输出文件
