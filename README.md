@@ -28,12 +28,21 @@
 - CPU 核心越高，频率越高越好，建议频率选择3.x以上，不要选择比较旧的cpu平台，可能某些编译后的指令，在旧的cpu上不支持，导致运行失败，demo
 - 我的机器配置： US / vm.ryzen-8 / VM Ryzen 8/8/60 NVMe / Ubuntu 22.04 /3Tb traffic (1Gbps) VM /16 IPv4
 - VPS 购买：[hostkey便宜实惠](https://hostkey.com/vps/) 
+- [NodeStop ](https://billing.nodestop.io/store/bare-metal)
+- [CloudFanatic ](https://cloudfanatic.net/)
+- [Sauceservers ](https://sauceservers.com/)
+- [Teraswitch ](https://teraswitch.com/)
+- [Vultr ](https://www.vultr.com/)
+- [RackNerd ](https://www.racknerd.com/)
+
+
 
 ## 快速开始
 
 1. 下载对应系统的发布版本
 2. 准备配置文件 `config.yaml`
 3. 运行程序开始套利
+
 
 ## 配置说明
 
