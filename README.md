@@ -27,7 +27,7 @@
 - 100M带宽
 - CPU 核心越高，频率越高越好，建议频率选择3.x以上，不要选择比较旧的cpu平台，可能某些编译后的指令，在旧的cpu上不支持，导致运行失败，demo
 - 我的机器配置： US / vm.ryzen-8 / VM Ryzen 8/8/60 NVMe / Ubuntu 22.04 /3Tb traffic (1Gbps) VM /16 IPv4
-- VPS 购买：[hostkey便宜实惠](https://hostkey.com/vps/edge/) 
+- VPS 购买：[hostkey便宜实惠](https://hostkey.com/vps/) 
 
 ## 快速开始
 
