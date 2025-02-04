@@ -90,10 +90,15 @@ chmod +x upgrade.sh
 ```bash
 mv config.yaml.example config.yaml
 ```
+赋予启动脚本权限
+```bash
+chmod +x run.sh
+```
 正常模式运行
 ```bash
 ./run.sh
 ```
+
 
 调试模式运行（输出详细日志）：
 ```bash
