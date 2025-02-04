@@ -1,3 +1,26 @@
+# 排除的dex program ids，如果不想被交易，可以在这里配置上
+jup_exclude_dex_program_ids:
+  - "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P"
+  - "MoonCVVNZFSYkqNXP6bxHLPL6QQJiMagDL3qcqUQTrG"
+#jupiter的本地端口
+jupiter_local_port: 18080
+#是否禁用本地jupiter
+jupiter_disable_local: false
+#是否使用本地缓存，建议禁用
+jupiter_use_local_cache: false
+#jupiter的market模式，建议选择remote
+jupiter_market_mode: "remote"
+#jupiter的webserver线程数
+jupiter_webserver: 2
+#jup的更新线程数
+jupiter_update: 2
+#自动重启时间，设置为0不会重启，单位为分钟
+auto_restart: 0
+# grpc token，如果你得gprc有token验证，可以在这里配置上
+yellowstone_grpc_token: ""
+# 从birdeye api 加载代币，最大加载50个代币,需要自己配置key，可以去注册一个账号key免费https://bds.birdeye.so/
+load_mints_from_birdeye_api_max_mints: 50
+birdeye_api_key: ""
 #你的私钥数组，系统启动后会在当前目录下生成一个PRIVATEKEY文件，里面是加密后的私钥，虽然做了加密，但是还是要小心，不要泄露，系统启动后会将此项配置删除，不在服务器上储存私钥
 private_key: ""
 #solana rpc url
