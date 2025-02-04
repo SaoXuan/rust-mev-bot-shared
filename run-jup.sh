@@ -153,8 +153,6 @@ generate_jupiter_command() {
     local webserver_thread_count=$(yq -r '.jupiter_webserver // 2' config.yaml)
     local update_thread_count=$(yq -r '.jupiter_update // 2' config.yaml)
     
-    # 读取 intermediate_tokens
-    local intermediate_tokens=$(yq -r '.intermediate_tokens[]' config.yaml 2>/dev/null | paste -sd "," -)
     
     # 检查必要的配置
     if [ -z "$rpc_url" ]; then
@@ -185,13 +183,13 @@ generate_jupiter_command() {
     cmd+=" --update-thread-count $update_thread_count"
     
     # 添加代币过滤
-    if [ -n "$intermediate_tokens" ]; then
-        log_info "使用配置文件中的 intermediate_tokens: $intermediate_tokens"
-        cmd+=" --filter-markets-with-mints $intermediate_tokens"
-    elif [ -f "token-cache.json" ]; then
+    if [ -f "token-cache.json" ]; then
         local mints=$(jq -r 'join(",")' token-cache.json)
         log_info "使用 token-cache.json 中的代币列表"
         cmd+=" --filter-markets-with-mints $mints"
+    else
+        log_error "未找到 token-cache.json 文件"
+        exit 1
     fi
     
     # 添加排除的 DEX
@@ -207,6 +205,9 @@ generate_jupiter_command() {
 start_jupiter_service() {
     local jupiter_cmd
     jupiter_cmd=$(generate_jupiter_command)
+    
+    # 打印启动命令
+    log_info "启动命令: $jupiter_cmd"
     
     # 执行命令
     if [[ "${DEBUG:-false}" == "true" ]]; then
