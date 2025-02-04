@@ -43,7 +43,7 @@ random_engine: true
 #jito配置UUID，没怎么测试，建议先不要用,使用多ip的方法，而不是配置uuid
 jito_uuid: ""
 #从url加载代币，可以从你的jup加载代币，你的jup加载了什么币，会拉到bot内。如果从其他地方拉取，需要和jup返回结构抱持一致，建议从jup加载代币
-load_mints_form_url: "http://0.0.0.0:18080/tokens"
+#load_mints_form_url: "http://0.0.0.0:18080/tokens"
 #从文件加载代币
 intermediate_tokens_file: "test.json"
 #从配置文件加载代币
