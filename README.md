@@ -26,8 +26,10 @@
 - 2G内存
 - 100M带宽
 - CPU 核心越高，频率越高越好，建议频率选择3.x以上，不要选择比较旧的cpu平台，可能某些编译后的指令，在旧的cpu上不支持，导致运行失败，demo
-- 我的机器配置： US / vm.ryzen-8 / VM Ryzen 8/8/60 NVMe / Ubuntu 22.04 /3Tb traffic (1Gbps) VM /16 IPv4
-- VPS 购买：[hostkey便宜实惠](https://hostkey.com/vps/) 
+- RPC & Grpc 节点选择：
+
+## VPS 购买：
+- [hostkey便宜实惠](https://hostkey.com/vps/) 
 - [NodeStop ](https://billing.nodestop.io/store/bare-metal)
 - [CloudFanatic ](https://cloudfanatic.net/)
 - [Sauceservers ](https://sauceservers.com/)
@@ -35,6 +37,11 @@
 - [Vultr ](https://www.vultr.com/)
 - [RackNerd ](https://www.racknerd.com/)
 
+## RPC &Grpc 购买
+- [Helius: Provide RPC/Yellowstone. ](https://www.helius.dev/)
+- [Quicknode: Provide RPC/Jup API. ](https://www.quicknode.com/?via=cetipo)
+- [Shyft: Provide RPC/Jup API. ](https://shyft.to/)
+- [KawaiiLabs: Provide RPC/Jup API. ](https://discord.gg/kawaiilabs)
 
 
 ## 快速开始
