@@ -26,7 +26,7 @@
 - 2G内存
 - 100M带宽
 - CPU 核心越高，频率越高越好，建议频率选择3.x以上，不要选择比较旧的cpu平台，可能某些编译后的指令，在旧的cpu上不支持，导致运行失败，demo
-- RPC & Grpc 节点选择：
+- RPC & Grpc 节点选择
 
 ## VPS 购买：
 - [hostkey便宜实惠](https://hostkey.com/vps/) 
@@ -49,8 +49,56 @@
 1. 下载对应系统的发布版本
 2. 准备配置文件 `config.yaml`
 3. 运行程序开始套利
+4. 你可以clone本仓库运行，或者使用下方得方式快速运行
 
+## 运行方式
+创建一个bot文件夹
+```bash
+mkdir bot
+```
+```bash
+cd bot
+```
+Install wget：
+```bash
+sudo apt update
+```
+```bash
+sudo apt install wget
+```
+install unzip
+```bash
+sudo apt install unzip
+```
+下载发布版本
+```bash
+wget https://sourceforge.net/projects/rust-mev-bot/files/rust-mev-bot-1.0.0.zip
+```
+解压
+```bash
+unzip rust-mev-bot-1.0.0.zip
+```
+更新版本
+```bash
+chmod +x upgrade.sh
+```
+```bash
+./upgrade.sh
+```
 
+将config.yaml.example 重命名为config.yaml 并配置上相关参数
+```bash
+mv config.yaml.example config.yaml
+```
+正常模式运行
+```bash
+./run.sh
+```
+
+调试模式运行（输出详细日志）：
+```bash
+./run.sh debug
+```
 ## 配置说明
 
 配置文件 `config.yaml` 示例：
@@ -277,54 +325,7 @@ compute_unit_limit: 180000
 
 ```
 
-## 运行方式
-创建一个bot文件夹
-```bash
-mkdir bot
-```
-```bash
-cd bot
-```
-Install wget：
-```bash
-sudo apt update
-```
-```bash
-sudo apt install wget
-```
-install unzip
-```bash
-sudo apt install unzip
-```
-下载发布版本
-```bash
-wget https://sourceforge.net/projects/rust-mev-bot/files/rust-mev-bot-1.0.0.zip
-```
-解压
-```bash
-unzip rust-mev-bot-1.0.0.zip
-```
-更新版本
-```bash
-chmod +x upgrade.sh
-```
-```bash
-./upgrade.sh
-```
 
-将config.yaml.example 重命名为config.yaml 并配置上相关参数
-```bash
-mv config.yaml.example config.yaml
-```
-正常模式运行
-```bash
-./run.sh
-```
-
-调试模式运行（输出详细日志）：
-```bash
-./run.sh debug
-```
 
 ## 监控和日志
 
