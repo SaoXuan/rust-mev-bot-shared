@@ -102,7 +102,7 @@ chmod +x run.sh
 
 调试模式运行（输出详细日志）：
 ```bash
-./run.sh debug
+./run.sh --debug
 ```
 ## 配置说明
 
