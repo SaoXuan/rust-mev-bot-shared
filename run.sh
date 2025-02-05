@@ -44,7 +44,7 @@ check_dependencies() {
     for dep in "${dependencies[@]}"; do
         if ! command -v "$dep" &> /dev/null; then
             log_info "正在安装 $dep..."
-            apt-get update && apt-get install -y "$dep"
+            apt update && apt install -y "$dep"
         fi
     done
 }
