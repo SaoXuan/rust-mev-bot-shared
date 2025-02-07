@@ -2,7 +2,6 @@
 基于 Rust 开发的高性能 Solana MEV 套利机器人，支持 Jupiter 聚合器和 Jito Bundle。
 ## 前言
 - 当前利润怎么样？目前我demo钱包应该是6台机器，每天2-5sol左右，[每日利润，也得看行情](https://www.circular.bot/address/F1gnxS6Csq8pyApuogH2R6z5TqShwu3o7DMTm5WUphJ7)
-- [所有使用bot用户的每日盈利情况-Dune](https://dune.com/yscxy/rust-mev-bot-dashboard)
 - 由于用机器人换sol和wsol可能会换不成功，建议大家去jup换wsol[Jupiter链接](https://jup.ag/)，定期补充gas，gas不足会导致不出单
 - 本人免责声明，请大家先小金额测试，测试没有问题了再大金额使用，代码逻辑里是不会导致大家资金损失，但是以防万一，营收自负
 - 本人保证不会收集任何用户相关的信息，你可以选择用抓包软件等安全工具扫描，如果发现有收集信息，请立即停止使用，并联系作者
@@ -12,8 +11,7 @@
 - 各位的支持与推广就是我的动力，作者会后续持续更新，并教大家如何赚取最大利润，当前观察钱包就是跑的下方的demo配置，大家可以自行修改调整
 - [作者钱包监控地址](https://solscan.io/account/F1gnxS6Csq8pyApuogH2R6z5TqShwu3o7DMTm5WUphJ7)
 - [小费收益](https://solscan.io/account/BUp6bo7x5UG3Xq8KSrnFwGbuzFJHsJcQ5vMnb9LwR7G4)
-- [群友制作dune-daily](https://dune.com/queries/4632156/7715285/2c559022-b479-4614-926b-ae7d67dfe39f)
-- [群友制作dune-pre-day](https://dune.com/queries/4646483/7737654/5a560eb5-e9d9-4f1c-808a-3f38d0fe6c02)
+- [所有使用bot用户的每日盈利情况-Dune](https://dune.com/yscxy/rust-mev-bot-dashboard)
 ## 主要功能
 
 - 自动化套利交易
