@@ -153,6 +153,12 @@ get_birdeye_token_addresses() {
         
         offset=$((offset + current_limit))
         log_debug "已处理: $offset / $limit"
+
+        # 如果不是最后一次请求,添加2秒延迟
+        if [ $offset -lt $limit ]; then
+            log_info "等待2秒后继续下一页请求..."
+            sleep 2
+        fi
     done
     
     # 检查是否获取到数据
