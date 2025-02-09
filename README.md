@@ -155,7 +155,8 @@ random_engine: true
 #intermediate_tokens_file: "./test.json"
 #从配置文件加载代币
 intermediate_tokens:
-  - "6AJcP7wuLwmRYLBNbi825wgguaPsWzPBEHcHndpRpump"
+  - "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+  - "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"
   # 排除的币种
 not_support_tokens:
 #最大代币数量，如果低于最大限制的60%会一直请求load_mints_form_url，直到达到目标才会运行起来，主要是为了链接jup 的时候jup还没加载好全部的代币
