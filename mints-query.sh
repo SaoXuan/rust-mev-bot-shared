@@ -214,6 +214,9 @@ merge_and_filter_tokens() {
     local mints_file=$(yq -r '.intermediate_tokens_file // "未配置"' "$CONFIG_FILE")
     local birdeye_api_key=$(yq -r '.birdeye_api_key // ""' "$CONFIG_FILE")
     
+    # 在获取 max_tokens_limit 配置
+    local max_tokens_limit=$(yq -r '.max_tokens_limit // 80' "$CONFIG_FILE")
+    
     local has_data=false
     local total_tokens=0
 
@@ -283,6 +286,19 @@ merge_and_filter_tokens() {
             return 1
         fi
 
+        local total_valid_tokens=$(echo "$valid_tokens" | wc -l)
+        
+        # 如果去重后的token数量超过限制,随机选择指定数量的token
+        if [ "$total_valid_tokens" -gt "$max_tokens_limit" ]; then
+            log_info "token数量($total_valid_tokens)超过限制($max_tokens_limit),随机选择${max_tokens_limit}个token"
+            # 确保SOL token总是被包含
+            echo "So11111111111111111111111111111111111111112" > "$temp_file"
+            # 随机选择剩余的token
+            remaining_limit=$((max_tokens_limit - 1))
+            echo "$valid_tokens" | grep -v "So11111111111111111111111111111111111111112" | shuf -n "$remaining_limit" >> "$temp_file"
+            valid_tokens=$(cat "$temp_file" | sort -u)
+        fi
+
         # 转换为JSON数组格式并写入输出文件
         echo "[" > "$OUTPUT_FILE"
         echo "$valid_tokens" | sed 's/^/"/;s/$/",/' | sed '$s/,$//' >> "$OUTPUT_FILE"
@@ -290,7 +306,8 @@ merge_and_filter_tokens() {
         
         local final_count=$(echo "$valid_tokens" | wc -l)
         log_info "原始token总数: $total_tokens"
-        log_info "去重后token数: $final_count"
+        log_info "去重后token总数: $total_valid_tokens"
+        log_info "最终选择token数: $final_count"
         
         rm -f "$temp_file"
         return 0
