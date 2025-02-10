@@ -134,7 +134,7 @@ auto_restart: 30
 #________________以上为jup相关配置内容_______________
 # grpc token，如果你得gprc有token验证，可以在这里配置上
 yellowstone_grpc_token: ""
-# 从birdeye api 加载代币，最大加载50个代币,需要自己配置key，可以去注册一个账号key免费https://bds.birdeye.so/
+# 从birdeye api 加载代币，最大加载x个代币,需要自己配置key，可以去注册一个账号key免费https://bds.birdeye.so/
 load_mints_from_birdeye_api_max_mints: 50
 birdeye_api_key: ""
 #你的私钥数组，系统启动后会在当前目录下生成一个PRIVATEKEY文件，里面是加密后的私钥，虽然做了加密，但是还是要小心，不要泄露，系统启动后会将此项配置删除，不在服务器上储存私钥
