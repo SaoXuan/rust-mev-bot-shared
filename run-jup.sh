@@ -150,9 +150,10 @@ generate_jupiter_command() {
     local yellowstone_token=$(yq -r '.yellowstone_grpc_token // ""' config.yaml)
     local port=$(yq -r '.jupiter_local_port // 18080' config.yaml)
     local market_mode=$(yq -r '.jupiter_market_mode // "remote"' config.yaml)
-    local webserver_thread_count=$(yq -r '.jupiter_webserver // 2' config.yaml)
-    local update_thread_count=$(yq -r '.jupiter_update // 2' config.yaml)
-    
+    local webserver_thread_count=$(yq -r '.jupiter_webserver // 4' config.yaml)
+    local update_thread_count=$(yq -r '.jupiter_update // 4' config.yaml)
+    local total_thread_count=$(yq -r '.total_thread_count // 16' config.yaml)
+    local host=$(yq -r '.jup_bind_local_host // "0.0.0.0"' config.yaml)
     
     # 检查必要的配置
     if [ -z "$rpc_url" ]; then
@@ -165,6 +166,7 @@ generate_jupiter_command() {
     cmd+=" --market-cache https://cache.jup.ag/markets?v=4"
     cmd+=" --market-mode $market_mode"
     cmd+=" --port $port"
+    cmd+=" --host $host"
     cmd+=" --allow-circular-arbitrage"
     cmd+=" --enable-new-dexes"
     cmd+=" --expose-quote-and-simulate"
@@ -178,7 +180,7 @@ generate_jupiter_command() {
     fi
     
     # 添加线程配置
-    cmd+=" --total-thread-count 8"
+    cmd+=" --total-thread-count $total_thread_count"
     cmd+=" --webserver-thread-count $webserver_thread_count"
     cmd+=" --update-thread-count $update_thread_count"
     

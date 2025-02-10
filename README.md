@@ -113,18 +113,22 @@ chmod +x run.sh
 jup_exclude_dex_program_ids:
   - "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P"
   - "MoonCVVNZFSYkqNXP6bxHLPL6QQJiMagDL3qcqUQTrG"
+#jupiter绑定的ip，建议设置为127.0.0.1，如果设置为0.0.0.0，则jupiter会绑定所有ip，可能会被别人扫描到，调用你的服务
+jup_bind_local_host: 127.0.0.1
 #jupiter的本地端口
 jupiter_local_port: 18080
 #是否禁用本地jupiter
-jupiter_disable_local: false
+jupiter_disable_local: true
 #是否使用本地缓存，建议禁用
 jupiter_use_local_cache: false
 #jupiter的market模式，建议选择remote
 jupiter_market_mode: "remote"
 #jupiter的webserver线程数
-jupiter_webserver: 2
+jupiter_webserver: 4
 #jup的更新线程数
-jupiter_update: 2
+jupiter_update: 4
+#jupiter的总线程数
+total_thread_count: 16
 #自动重启时间，设置为0不会重启，单位为分钟
 auto_restart: 30
 #________________以上为jup相关配置内容_______________
@@ -138,7 +142,7 @@ private_key: ""
 #solana rpc url
 rpc_url: "http://xxx"
 yellowstone_grpc_url: "http://xxx"
-jupiter_api_url: "http://0.0.0.0:18080"
+jupiter_api_url: "http://127.0.0.1:18080"
 # Jito MEV-Block-Engine 节点配置列表，建议配置上多个节点，随机选择一个节点进行交易，这样的你的QPS会有提升，尽量选择几个距离你比较近的节点，当然全发也可以，目测日本较慢，会降低整体效率,如果节点不在该区可以注释掉,
 jito_engine:
    - NL # 荷兰阿姆斯特丹节点
@@ -156,8 +160,8 @@ random_engine: true
 #intermediate_tokens_file: "./test.json"
 #从配置文件加载代币
 intermediate_tokens:
-  - "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
   - "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"
+  - "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
   # 排除的币种
 not_support_tokens:
 #最大代币数量，如果低于最大限制的60%会一直请求load_mints_form_url，直到达到目标才会运行起来，主要是为了链接jup 的时候jup还没加载好全部的代币
@@ -196,7 +200,7 @@ log_trade_execution: false
 #是否开启单独钱包
 enable_separate_wallet: true
 
-#ip 配置信息，如果有多IP可以在这里配置，否则使用本机IP，建议配置上多IP，如果有请取消注释，并配置上
+#ip 配置信息，如果有多IP可以在这里配置，否则使用本机IP，建议配置上多IP，如果有请取消注释，并配置上,需要先在/etc/netplan 下配置上ip，然后重启网络
 # ip_addrs:
 #   - "xxxx"
 #jup 调优
@@ -212,6 +216,8 @@ dynamic_compute_unit_limit: true
 cu_limit_percentage: 0.98
 #计算预算，在开启动态预算的时候不生效
 compute_unit_limit: 180000
+
+
 
 
 ```

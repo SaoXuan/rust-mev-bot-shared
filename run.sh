@@ -98,7 +98,7 @@ generate_token_list() {
 # 检查是否需要启动本地 Jupiter
 check_local_jupiter_enabled() {
     local disable_local_jupiter
-    disable_local_jupiter=$(yq -r '.JUPITER.DISABLE_LOCAL_JUPITER // false' config.yaml)
+    disable_local_jupiter=$(yq -r '.jupiter_disable_local // false' config.yaml)
     
     if [[ "$disable_local_jupiter" == "true" ]]; then
         log_info "配置文件设置为不启动本地 Jupiter，跳过启动步骤"
