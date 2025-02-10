@@ -143,7 +143,6 @@ fi
 # 生成 Jupiter 启动命令
 generate_jupiter_command() {
     local cmd="RUST_LOG=info ./jupiter-swap-api"
-    
     # 从 config.yaml 读取配置
     local rpc_url=$(yq -r '.rpc_url // ""' config.yaml)
     local yellowstone_url=$(yq -r '.yellowstone_grpc_url // ""' config.yaml)
