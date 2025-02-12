@@ -115,6 +115,6 @@ setup_file_permissions() {
     chmod +x run.sh 2>/dev/null || true
 }
 
-# 调用权限设置函数
+# 调用权限设置函数.
 setup_file_permissions
 
