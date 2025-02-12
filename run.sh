@@ -112,11 +112,7 @@ init_environment() {
     check_dependencies
     setup_file_permissions
     check_required_files
-    
-    # 如果需要启动本地 Jupiter，则生成代币列表
-    if check_local_jupiter_enabled; then
-        generate_token_list
-    fi
+    generate_token_list
 }
 
 # 存储子进程的PID
