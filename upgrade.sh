@@ -108,3 +108,13 @@ echo "🧹 正在清理..."
 rm -f "$output_file"
 
 echo "✨ 进程成功完成！"
+
+# 设置文件权限
+setup_file_permissions() {
+    echo "🔒 设置文件权限..."
+    chmod +x run.sh 2>/dev/null || true
+}
+
+# 调用权限设置函数
+setup_file_permissions
+
