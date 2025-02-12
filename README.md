@@ -119,7 +119,7 @@ jup_bind_local_host: 127.0.0.1
 #jupiter的本地端口
 jupiter_local_port: 18080
 #是否禁用本地jupiter
-jupiter_disable_local: true
+jupiter_disable_local: false
 #是否使用本地缓存，建议禁用
 jupiter_use_local_cache: false
 #jupiter的market模式，建议选择remote
