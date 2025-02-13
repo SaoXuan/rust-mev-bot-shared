@@ -135,7 +135,7 @@ auto_restart: 30
 #________________以上为jup相关配置内容_______________
 # grpc token，如果你得gprc有token验证，可以在这里配置上
 yellowstone_grpc_token: ""
-# 从birdeye api 加载代币，最大加载x个代币,需要自己配置key，可以去注册一个账号key免费https://bds.birdeye.so/
+# 从birdeye api 加载代币，最大加载50个代币,需要自己配置key，可以去注册一个账号key免费https://bds.birdeye.so/
 load_mints_from_birdeye_api_max_mints: 50
 birdeye_api_key: ""
 #你的私钥数组，系统启动后会在当前目录下生成一个PRIVATEKEY文件，里面是加密后的私钥，虽然做了加密，但是还是要小心，不要泄露，系统启动后会将此项配置删除，不在服务器上储存私钥
@@ -155,7 +155,7 @@ jito_engine:
 random_engine: true
 #jito配置UUID，没怎么测试，建议先不要用,使用多ip的方法，而不是配置uuid
 #jito_uuid: ""
-#从url加载代币，可以从你的jup加载代币，你的jup加载了什么币，会拉到bot内。如果从其他地方拉取，需要和jup返回结构抱持一致，建议从jup加载代币
+#自定义从url加载代币,返回值应该是["xx","xx"] 这样的格式，否则无法解析，可以从jup加载，比如：http://127.0.0.1:18080/tokens
 #load_mints_from_url: ""
 #从文件加载代币
 #intermediate_tokens_file: "./test.json"
@@ -175,9 +175,27 @@ max_tip_lamports: 100000000
 static_tip_percentage: 0.7501
 #交易memo，可以不设置
 memo: ""
-#建议先从小的开始0.1-1s，设置很多不会影响性能，性能主要由线程和网络io决定
+#建议先从小的开始0.1-1s，设置很多不会影响性能，性能主要由线程和网络io决定,确保你有足够的wsol，否则不行，主要交易金额需要自己设置，建议低小额多点，大额小点，让自己的资金充分利用，需要根据自己资金量修改
 trade_range:
   - 100000000    # 0.1 SOL
+  - 200000000    # 0.2 SOL
+  - 300000000    # 0.3 SOL
+  - 400000000    # 0.4 SOL
+  - 500000000    # 0.5 SOL
+  - 600000000    # 0.6 SOL
+  - 700000000    # 0.7 SOL
+  - 800000000    # 0.8 SOL
+  - 900000000    # 0.9 SOL
+  - 1000000000    # 1 SOL
+  - 2000000000    # 2 SOL
+  - 3000000000    # 3 SOL
+  - 4000000000    # 4 SOL
+  - 5000000000    # 5 SOL
+  - 6000000000    # 6 SOL
+  - 7000000000    # 7 SOL
+  - 8000000000    # 8 SOL
+  - 9000000000    # 9 SOL
+  - 10000000000    # 10 SOL
 #发送交易类型，建议选择Mixed，可选Rpc,Grpc,Mixed，选择Mixed可以让你的ip限制速率翻倍
 rpc_type: Mixed
 #blockhash rpc类型，建议选择Rpc，可选Grpc,Rpc，当前实现Grpc不是订阅的，等改成订阅的再选用Grpc
@@ -217,8 +235,6 @@ dynamic_compute_unit_limit: true
 cu_limit_percentage: 0.98
 #计算预算，在开启动态预算的时候不生效
 compute_unit_limit: 180000
-
-
 
 
 ```
