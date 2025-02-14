@@ -38,9 +38,31 @@ show_help() {
     log_info "  --help     显示此帮助信息"
 }
 
+# 安装 yq 函数
+install_yq() {
+    if ! command -v yq &> /dev/null; then
+        log_info "正在安装 yq..."
+        if wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64; then
+            chmod +x /usr/local/bin/yq
+            log_info "yq 安装成功"
+        else
+            log_error "yq 下载失败"
+            return 1
+        fi
+    fi
+    return 0
+}
+
 # 检查依赖工具是否安装
 check_dependencies() {
-    local dependencies=("yq" "jq")
+    # 首先安装 yq
+    install_yq || {
+        log_error "yq 安装失败"
+        exit 1
+    }
+    
+    # 检查其他依赖
+    local dependencies=("jq")
     for dep in "${dependencies[@]}"; do
         if ! command -v "$dep" &> /dev/null; then
             log_info "正在安装 $dep..."
