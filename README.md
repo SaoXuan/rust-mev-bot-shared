@@ -74,11 +74,11 @@ sudo apt install unzip
 ```
 下载发布版本
 ```bash
-wget https://sourceforge.net/projects/rust-mev-bot/files/rust-mev-bot-1.0.3.zip
+wget https://sourceforge.net/projects/rust-mev-bot/files/rust-mev-bot-1.0.4.zip
 ```
 解压
 ```bash
-unzip rust-mev-bot-1.0.3.zip
+unzip rust-mev-bot-1.0.4.zip
 ```
 更新版本
 ```bash
