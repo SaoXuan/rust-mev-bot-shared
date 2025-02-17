@@ -121,6 +121,5 @@ dynamic_compute_unit_limit: true
 cu_limit_percentage: 0.98
 #计算预算，在开启动态预算的时候不生效
 compute_unit_limit: 180000
-
 #一个交易中支持的最大账户数
 max_account_limit: 24
