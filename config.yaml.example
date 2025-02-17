@@ -113,8 +113,6 @@ enable_separate_wallet: true
 #jup 调优
 #是否只使用单跳，如果要使用多跳，可以打开多跳，可能会有更多机会，但是会jup quote 的会慢一点
 only_direct_routes: false
-#限制中间代币为顶级代币,单跳得时候千万不要开，多跳得时候看自己偶尔可以开
-restrict_intermediate_tokens: false
 #是否预检交易大小，先暂时关闭，这个只对多跳有用，等待后续开发
 check_transaction_size: false
 #是否开启动态计算预算,建议开启
