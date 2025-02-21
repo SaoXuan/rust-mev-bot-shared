@@ -13,7 +13,7 @@
 - [作者钱包监控地址](https://solscan.io/account/F1gnxS6Csq8pyApuogH2R6z5TqShwu3o7DMTm5WUphJ7)
 - [小费收益](https://solscan.io/account/BUp6bo7x5UG3Xq8KSrnFwGbuzFJHsJcQ5vMnb9LwR7G4)
 - [所有使用bot用户的每日盈利情况-Dune](https://dune.com/yscxy/rust-mev-bot-dashboard)
-- [Discard](https://discord.gg/rCBZy4ZKZD)
+- [Discord群聊，欢迎进来和大佬们一起搞钱](https://discord.gg/rCBZy4ZKZD)
 ## 主要功能
 
 - 自动化套利交易
