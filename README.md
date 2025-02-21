@@ -1,6 +1,7 @@
 # Solana MEV 套利机器人
 基于 Rust 开发的高性能 Solana MEV 套利机器人，支持 Jupiter 聚合器和 Jito Bundle。
-小白教程通道[小白教程](https://rust-mev-bot.solboxs.com/)
+## 小白教程通道[小白教程](https://rust-mev-bot.solboxs.com/)
+https://rust-mev-bot.solboxs.com/
 ## 前言
 - 当前利润怎么样？目前我demo钱包应该是6台机器，每天2-5sol左右，[每日利润，也得看行情](https://www.circular.bot/address/F1gnxS6Csq8pyApuogH2R6z5TqShwu3o7DMTm5WUphJ7)
 - 由于用机器人换sol和wsol可能会换不成功，建议大家去jup换wsol[Jupiter链接](https://jup.ag/)，定期补充gas，gas不足会导致不出单
