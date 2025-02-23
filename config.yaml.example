@@ -120,6 +120,8 @@ dynamic_compute_unit_limit: true
 #计算预算百分比，设置这个值是因为，模拟后的cu可能偏大，可以设置百分比二次修改cu限制，近一步降低cu限制
 cu_limit_percentage: 0.98
 #计算预算，在开启动态预算的时候不生效
-compute_unit_limit: 180000
+compute_unit_limit: 300000
 #一个交易中支持的最大账户数
 max_account_limit: 24
+#是否开启kamino借贷
+enable_kamino: true
