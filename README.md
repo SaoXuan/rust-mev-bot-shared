@@ -135,4 +135,5 @@ chmod +x run.sh
 ## 免责声明
 
 本软件仅供学习研究使用。使用者需自行承担因使用本软件而产生的所有风险和责任。作者不对因使用本软件造成的任何损失负责。 
-<iframe style="width:100%;height:auto;min-width:600px;min-height:400px;" src="https://star-history.com/embed?secret=Z2hwX0tFVlloYUlSWXM0NVRLdW8yMndad1hVdDNsU0lHbDI0QUdZNg==#SaoXuan/rust-mev-bot-shared&Date" frameBorder="0"></iframe>
+## Star History
+[![Star History Chart](https://api.star-history.com/svg?repos=SaoXuan/rust-mev-bot-shared&type=Date)](https://star-history.com/#SaoXuan/rust-mev-bot-shared&Date)
