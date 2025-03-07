@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 获取脚本所在目录的绝对路径
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 cd "$SCRIPT_DIR"
 
 # 颜色定义
@@ -30,94 +30,16 @@ log_debug() {
     fi
 }
 
-# 根据端口号杀死进程的函数
-kill_process_on_port() {
-    local port=$1
-    local pids
-    
-    # 使用lsof查找端口对应的进程，并忽略错误输出
-    pids=$(lsof -ti tcp:${port} 2>/dev/null)
-
-    if [ -n "$pids" ]; then
-        log_info "正在关闭端口 $port 上的进程..."
-        
-        # 遍历所有找到的PID
-        for pid in $pids; do
-            if kill -0 "$pid" 2>/dev/null; then
-                log_info "正在停止进程 PID: $pid"
-                kill -15 "$pid" 2>/dev/null
-                
-                # 等待最多3秒看进程是否结束
-                local count=0
-                while kill -0 "$pid" 2>/dev/null && [ $count -lt 3 ]; do
-                    sleep 1
-                    count=$((count + 1))
-                done
-                
-                # 如果进程还在运行，使用强制终止
-                if kill -0 "$pid" 2>/dev/null; then
-                    log_warning "进程 $pid 未能正常终止，使用强制终止"
-                    kill -9 "$pid" 2>/dev/null
-                fi
-            fi
-        done
-    else
-        log_info "端口 $port 上没有运行的进程"
-    fi
+# 清理函数
+cleanup() {
+    ./kill-process.sh
 }
-
-# 递归杀死进程及其子进程的函数
-kill_process_and_children() {
-    local pid=$1
-    
-    # 检查PID是否有效
-    if ! kill -0 "$pid" 2>/dev/null; then
-        return 0
-    fi
-    
-    # 获取子进程列表
-    local children
-    children=$(pgrep -P "$pid" 2>/dev/null)
-    
-    # 递归终止子进程
-    if [ -n "$children" ]; then
-        log_info "找到子进程: $children"
-        for child in $children; do
-            kill_process_and_children "$child"
-        done
-    fi
-    
-    # 终止当前进程
-    if kill -0 "$pid" 2>/dev/null; then
-        log_info "正在终止进程 $pid"
-        kill -15 "$pid" 2>/dev/null
-        
-        # 等待最多3秒
-        local count=0
-        while kill -0 "$pid" 2>/dev/null && [ $count -lt 3 ]; do
-            sleep 1
-            count=$((count + 1))
-        done
-        
-        # 如果还在运行，强制终止
-        if kill -0 "$pid" 2>/dev/null; then
-            log_warning "进程 $pid 未能正常终止，使用强制终止"
-            kill -9 "$pid" 2>/dev/null
-        fi
-    fi
-}
-
 cleanup_and_exit() {
-    # 终止jupiter-swap-api进程
-    if [ -n "$JUPITER_PID" ]; then
-        kill_process_and_children "$JUPITER_PID"
-    fi
-    # 清理端口上的进程
-    kill_process_on_port "$LOCAL_JUPITER_PORT"
-    log_info "清理完成，正在退出..."
+    ./kill-process.sh
     exit 0
 }
-
+# 设置信号处理
+trap cleanup SIGINT SIGTERM SIGHUP
 # 设置信号处理
 trap cleanup_and_exit SIGINT SIGTERM
 
@@ -133,13 +55,6 @@ fi
 # 设置默认Jupiter端口
 LOCAL_JUPITER_PORT=${LOCAL_JUPITER_PORT:-18080}
 
-log_info "正在清理... 如果看到No such file or directory或No process to kill on port $LOCAL_JUPITER_PORT是正常的"
-
-# 如果未禁用本地Jupiter服务，则关闭可能存在的旧进程
-if [ "$DISABLE_LOCAL_JUPITER" != "true" ]; then
-    kill_process_on_port $LOCAL_JUPITER_PORT
-fi
-
 # 生成 Jupiter 启动命令
 generate_jupiter_command() {
     local cmd="RUST_LOG=info ./jupiter-swap-api"
@@ -153,13 +68,13 @@ generate_jupiter_command() {
     local update_thread_count=$(yq -r '.jupiter_update // 4' config.yaml)
     local total_thread_count=$(yq -r '.total_thread_count // 16' config.yaml)
     local host=$(yq -r '.jup_bind_local_host // "0.0.0.0"' config.yaml)
-    
+
     # 检查必要的配置
     if [ -z "$rpc_url" ]; then
         log_error "RPC URL 未配置"
         exit 1
     fi
-    
+
     # 构建命令
     cmd+=" --rpc-url $rpc_url"
     cmd+=" --market-cache https://cache.jup.ag/markets?v=4"
@@ -169,7 +84,7 @@ generate_jupiter_command() {
     cmd+=" --allow-circular-arbitrage"
     cmd+=" --enable-new-dexes"
     cmd+=" --expose-quote-and-simulate"
-    
+
     # 添加 Yellowstone 配置
     if [ -n "$yellowstone_url" ]; then
         cmd+=" --yellowstone-grpc-endpoint $yellowstone_url"
@@ -177,12 +92,12 @@ generate_jupiter_command() {
             cmd+=" --yellowstone-grpc-x-token $yellowstone_token"
         fi
     fi
-    
+
     # 添加线程配置
     cmd+=" --total-thread-count $total_thread_count"
     cmd+=" --webserver-thread-count $webserver_thread_count"
     cmd+=" --update-thread-count $update_thread_count"
-    
+
     # 添加代币过滤
     if [ -f "token-cache.json" ]; then
         local mints=$(jq -r 'join(",")' token-cache.json)
@@ -192,13 +107,13 @@ generate_jupiter_command() {
         log_error "未找到 token-cache.json 文件"
         exit 1
     fi
-    
+
     # 添加排除的 DEX
     local exclude_dex_ids=$(yq -r '.jup_exclude_dex_program_ids[]' config.yaml 2>/dev/null | paste -sd "," -)
     if [ -n "$exclude_dex_ids" ]; then
         cmd+=" --exclude-dex-program-ids $exclude_dex_ids"
     fi
-    
+
     echo "$cmd"
 }
 
@@ -206,20 +121,20 @@ generate_jupiter_command() {
 start_jupiter_service() {
     local jupiter_cmd
     jupiter_cmd=$(generate_jupiter_command)
-    
+
     # 打印启动命令
     log_info "启动命令: $jupiter_cmd"
-    
+
     # 执行命令
     if [[ "${DEBUG:-false}" == "true" ]]; then
         eval "$jupiter_cmd" 2>&1 | tee jupiter-api.log
     else
-        eval "$jupiter_cmd" > jupiter-api.log 2>&1 &
+        eval "$jupiter_cmd" >jupiter-api.log 2>&1 &
     fi
-    
+
     local pid=$!
-    echo $pid > jupiter.pid
-    
+    echo $pid >jupiter.pid
+
     # 检查进程是否存活
     if kill -0 $pid 2>/dev/null; then
         log_info "Jupiter API 启动成功 (PID: $pid)"
@@ -234,7 +149,7 @@ start_jupiter_service() {
 monitor_and_restart() {
     # 创建运行标记文件
     touch .jupiter_running
-    
+
     while [ -f .jupiter_running ]; do
         if [[ "${DEBUG:-false}" == "true" ]]; then
             start_jupiter_service
@@ -250,26 +165,14 @@ monitor_and_restart() {
                     done
                 fi
             fi
-            
+
             # 如果标记文件被删除，退出循环
             [ ! -f .jupiter_running ] && break
-            
+
             sleep 5
         fi
     done
 }
-
-# 清理函数
-cleanup() {
-    rm -f .jupiter_running 2>/dev/null
-    if [ -f jupiter.pid ]; then
-        kill -9 $(cat jupiter.pid) 2>/dev/null
-        rm -f jupiter.pid
-    fi
-}
-
-# 设置信号处理
-trap cleanup SIGINT SIGTERM SIGHUP
 
 # 主函数
 main() {

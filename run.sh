@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 获取脚本所在目录的绝对路径
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 cd "$SCRIPT_DIR"
 
 # 颜色定义
@@ -40,7 +40,7 @@ show_help() {
 
 # 安装 yq 函数
 install_yq() {
-    if ! command -v yq &> /dev/null; then
+    if ! command -v yq &>/dev/null; then
         log_info "正在安装 yq..."
         if wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64; then
             chmod +x /usr/local/bin/yq
@@ -60,11 +60,11 @@ check_dependencies() {
         log_error "yq 安装失败"
         exit 1
     }
-    
+
     # 检查其他依赖
     local dependencies=("jq")
     for dep in "${dependencies[@]}"; do
-        if ! command -v "$dep" &> /dev/null; then
+        if ! command -v "$dep" &>/dev/null; then
             log_info "正在安装 $dep..."
             apt update && apt install -y "$dep"
         fi
@@ -90,7 +90,7 @@ check_required_files() {
 # 设置文件权限
 setup_file_permissions() {
     log_info "设置文件权限..."
-    chmod +x rust-mev-bot upgrade.sh jupiter-swap-api run-jup.sh kill-jup.sh mints-query.sh 2>/dev/null || true
+    chmod +x rust-mev-bot upgrade.sh jupiter-swap-api kill-process.sh run-jup.sh mints-query.sh 2>/dev/null || true
 }
 
 # 获取重启间隔时间（分钟）
@@ -110,7 +110,7 @@ generate_token_list() {
     else
         ./mints-query.sh
     fi
-    
+
     if [ $? -ne 0 ] || [ ! -f "$SCRIPT_DIR/token-cache.json" ]; then
         log_error "token-cache.json 生成失败"
         exit 1
@@ -121,9 +121,21 @@ generate_token_list() {
 check_local_jupiter_enabled() {
     local disable_local_jupiter
     disable_local_jupiter=$(yq -r '.jupiter_disable_local // false' config.yaml)
-    
+
     if [[ "$disable_local_jupiter" == "true" ]]; then
         log_info "配置文件设置为不启动本地 Jupiter，跳过启动步骤"
+        return 1 # 禁用时返回1（false）
+    fi
+    return 0 # 启用时返回0（true）
+}
+
+# 检查是否需要启动本地 rust-mev-bot
+check_local_bot_enabled() {
+    local disable_local_bot
+    disable_local_bot=$(yq -r '.disable_local_bot // false' config.yaml)
+
+    if [[ "$disable_local_bot" == "true" ]]; then
+        log_info "配置文件设置为不启动本地 Bot，跳过启动步骤"
         return 1
     fi
     return 0
@@ -137,69 +149,6 @@ init_environment() {
     generate_token_list
 }
 
-# 存储子进程的PID
-CHILD_PIDS=()
-
-# 清理函数 (用于正常重启)
-cleanup_for_restart() {
-    log_info "准备重启..."
-    
-    # 删除运行标记文件
-    rm -f .jupiter_running 2>/dev/null
-    
-    # 终止所有记录的子进程
-    for pid in "${CHILD_PIDS[@]}"; do
-        kill -9 $pid 2>/dev/null || true
-    done
-    
-    # 清理 Jupiter 相关进程
-    pkill -9 -f "jupiter-swap-api" 2>/dev/null || true
-    pkill -9 -f "run-jup.sh" 2>/dev/null || true
-    pkill -9 -f "mints-query.sh" 2>/dev/null || true
-    pkill -9 -f "node.*jupiter" 2>/dev/null || true
-    
-    # 清理 rust-mev-bot 进程
-    pkill -9 -f "rust-mev-bot" 2>/dev/null || true
-    
-    # 清理文件
-    rm -f jupiter.pid 2>/dev/null
-    
-    # 重置PID数组
-    CHILD_PIDS=()
-    
-    sleep 5
-    return 0
-}
-
-# 清理函数 (用于 Ctrl+C)
-cleanup_and_exit() {
-    echo ""
-    log_info "正在终止所有进程..."
-    
-    # 删除运行标记文件
-    rm -f .jupiter_running 2>/dev/null
-    
-    # 终止所有记录的子进程
-    for pid in "${CHILD_PIDS[@]}"; do
-        kill -9 $pid 2>/dev/null || true
-    done
-    
-    # 清理 Jupiter 相关进程
-    pkill -9 -f "jupiter-swap-api" 2>/dev/null || true
-    pkill -9 -f "run-jup.sh" 2>/dev/null || true
-    pkill -9 -f "mints-query.sh" 2>/dev/null || true
-    pkill -9 -f "node.*jupiter" 2>/dev/null || true
-    
-    # 清理 rust-mev-bot 进程
-    pkill -9 -f "rust-mev-bot" 2>/dev/null || true
-    
-    # 清理文件
-    rm -f jupiter.pid 2>/dev/null
-    
-    log_info "清理完成"
-    exit 1
-}
-
 # 启动服务
 start_service() {
     local restart_interval
@@ -208,22 +157,50 @@ start_service() {
     
     # 检查是否需要启动本地 Jupiter
     if check_local_jupiter_enabled; then
-        # 启动 Jupiter 并记录 PID
+        # 启动 Jupiter 并记录监控进程 PID
         if [[ "${DEBUG:-false}" == "true" ]]; then
             DEBUG=true ./run-jup.sh --debug &
-            CHILD_PIDS+=($!)
+            echo $! > monitor.pid
         else
             ./run-jup.sh &
-            CHILD_PIDS+=($!)
+            echo $! > monitor.pid
         fi
         sleep 5
     fi
     
     # 启动 rust-mev-bot 并记录 PID
-    ./rust-mev-bot &
-    CHILD_PIDS+=($!)
-    
-    return 0
+    if check_local_bot_enabled; then
+        ./rust-mev-bot &
+        echo $! > bot.pid
+    fi
+}
+
+# 清理函数
+cleanup() {
+    local is_exit=$1 # 传入参数：true 表示退出，false 表示重启
+
+    if [ "$is_exit" = "true" ]; then
+        echo ""
+        log_info "正在终止所有进程..."
+    else
+        log_info "Restart Task On ..."
+    fi
+    ./kill-process.sh
+    if [ "$is_exit" = "true" ]; then
+        log_info "清理完成"
+        exit 1
+    else
+        return 0
+    fi
+}
+
+# 为了保持原有的函数名，创建两个包装函数
+cleanup_for_restart() {
+    cleanup false
+}
+
+cleanup_and_exit() {
+    cleanup true
 }
 
 # 设置信号处理
@@ -234,15 +211,15 @@ run_main_loop() {
     while true; do
         init_environment
         start_service
-        
+
         local interval
         interval=$(get_restart_interval)
-        
+
         if [[ "${DEBUG:-false}" == "true" ]] || [ "$interval" -eq 0 ]; then
             wait
             break
         fi
-        
+
         sleep "${interval}m"
         cleanup_for_restart
     done
@@ -253,19 +230,19 @@ main() {
     # 解析命令行参数
     while [[ $# -gt 0 ]]; do
         case $1 in
-            --debug)
-                export DEBUG=true
-                shift
-                ;;
-            --help)
-                show_help
-                exit 0
-                ;;
-            *)
-                log_error "未知参数: $1"
-                show_help
-                exit 1
-                ;;
+        --debug)
+            export DEBUG=true
+            shift
+            ;;
+        --help)
+            show_help
+            exit 0
+            ;;
+        *)
+            log_error "未知参数: $1"
+            show_help
+            exit 1
+            ;;
         esac
     done
 
