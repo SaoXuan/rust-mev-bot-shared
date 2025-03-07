@@ -154,24 +154,24 @@ start_service() {
     local restart_interval
     restart_interval=$(get_restart_interval)
     [ "$restart_interval" -gt 0 ] && log_info "自动重启: ${restart_interval}分钟"
-    
+
     # 检查是否需要启动本地 Jupiter
     if check_local_jupiter_enabled; then
         # 启动 Jupiter 并记录监控进程 PID
         if [[ "${DEBUG:-false}" == "true" ]]; then
             DEBUG=true ./run-jup.sh --debug &
-            echo $! > monitor.pid
+            echo $! >monitor.pid
         else
             ./run-jup.sh &
-            echo $! > monitor.pid
+            echo $! >monitor.pid
         fi
         sleep 5
     fi
-    
+
     # 启动 rust-mev-bot 并记录 PID
     if check_local_bot_enabled; then
         ./rust-mev-bot &
-        echo $! > bot.pid
+        echo $! >bot.pid
     fi
 }
 
