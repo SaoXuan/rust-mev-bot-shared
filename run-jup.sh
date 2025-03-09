@@ -147,30 +147,66 @@ start_jupiter_service() {
 
 # 监控进程并在崩溃时重启
 monitor_and_restart() {
-    # 创建运行标记文件
     touch .jupiter_running
 
     while [ -f .jupiter_running ]; do
-        if [[ "${DEBUG:-false}" == "true" ]]; then
-            start_jupiter_service
-            break
-        else
-            start_jupiter_service
-            if [ $? -eq 0 ]; then
-                local pid=$(cat jupiter.pid 2>/dev/null)
-                if [ -n "$pid" ]; then
-                    log_info "开始监控 Jupiter 进程 (PID: $pid)"
-                    while kill -0 $pid 2>/dev/null && [ -f .jupiter_running ]; do
-                        sleep 5
-                    done
+        start_jupiter_service
+        local parent_pid=$(cat jupiter.pid 2>/dev/null)
+        
+        if [ -n "$parent_pid" ]; then
+            log_info "监控 Jupiter 进程 (父进程 PID: $parent_pid)"
+            
+            # 等待父进程创建子进程
+            local max_wait=10
+            local waited=0
+            while [ $waited -lt $max_wait ]; do
+                local child_pid=$(pgrep -P "$parent_pid" 2>/dev/null)
+                if [ -n "$child_pid" ]; then
+                    log_info "检测到子进程 (PID: $child_pid)"
+                    break
                 fi
-            fi
+                log_debug "等待子进程创建... ($waited/$max_wait)"
+                sleep 1
+                ((waited++))
+            done
+            
+            # 监控父进程和子进程
+            while true; do
+                # 检查父进程状态
+                if ! kill -0 "$parent_pid" 2>/dev/null; then
+                    log_warning "父进程 $parent_pid 已终止"
+                    break
+                fi
+                log_debug "父进程 $parent_pid 存活"
 
-            # 如果标记文件被删除，退出循环
-            [ ! -f .jupiter_running ] && break
+                # 检查子进程状态
+                if [ -n "$child_pid" ]; then
+                    if ! kill -0 "$child_pid" 2>/dev/null; then
+                        log_warning "子进程 $child_pid 已终止"
+                        break
+                    fi
+                    log_debug "子进程 $child_pid 存活"
+                fi
 
-            sleep 5
+                # 打印进程状态
+                log_debug "进程状态："
+                ps -f -p "$parent_pid" "$child_pid" 2>/dev/null >&2
+                
+                sleep 5
+            done
+            
+            log_warning "检测到进程终止，准备重启..."
+            # 确保清理所有相关进程
+            log_debug "清理子进程..."
+            pkill -P "$parent_pid" 2>/dev/null
+            log_debug "清理父进程..."
+            kill -9 "$parent_pid" 2>/dev/null
+        else
+            log_error "无法获取 Jupiter PID"
         fi
+        
+        log_debug "等待进程完全退出..."
+        sleep 2
     done
 }
 
