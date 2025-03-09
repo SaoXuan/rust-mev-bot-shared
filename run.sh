@@ -215,7 +215,8 @@ run_main_loop() {
         local interval
         interval=$(get_restart_interval)
 
-        if [[ "${DEBUG:-false}" == "true" ]] || [ "$interval" -eq 0 ]; then
+        # 只有当 interval 为 0 时不重启
+        if [ "$interval" -eq 0 ]; then
             wait
             break
         fi
