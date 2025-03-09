@@ -76,7 +76,6 @@ fi
 if [ -f "bot.pid" ]; then
     kill -9 $(cat bot.pid) 2>/dev/null || true
     rm -f bot.pid
-    kill_process_by_name "rust-mev-bot"
     log_warning "bot stop complete ..."
 fi
 
