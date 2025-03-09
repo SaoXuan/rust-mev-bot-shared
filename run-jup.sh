@@ -32,15 +32,25 @@ log_debug() {
 
 # 清理函数
 cleanup() {
+    # 确保清理所有相关进程
+    if [ -f jupiter.pid ]; then
+        local pid=$(cat jupiter.pid)
+        if [ -n "$pid" ]; then
+            kill -9 "$pid" 2>/dev/null
+            rm -f jupiter.pid
+        fi
+    fi
     ./kill-process.sh
 }
+
 cleanup_and_exit() {
-    ./kill-process.sh
+    cleanup
+    rm -f .jupiter_running
     exit 0
 }
+
 # 设置信号处理
 trap cleanup SIGINT SIGTERM SIGHUP
-# 设置信号处理
 trap cleanup_and_exit SIGINT SIGTERM
 
 # 设置系统文件描述符限制
@@ -121,28 +131,22 @@ generate_jupiter_command() {
 start_jupiter_service() {
     local jupiter_cmd
     jupiter_cmd=$(generate_jupiter_command)
-
-    # 打印启动命令
     log_info "启动命令: $jupiter_cmd"
 
-    # 执行命令
-    if [[ "${DEBUG:-false}" == "true" ]]; then
-        eval "$jupiter_cmd" 2>&1 | tee jupiter-api.log
-    else
-        eval "$jupiter_cmd" >jupiter-api.log 2>&1 &
-    fi
-
-    local pid=$!
-    echo $pid >jupiter.pid
-
-    # 检查进程是否存活
-    if kill -0 $pid 2>/dev/null; then
-        log_info "Jupiter API 启动成功 (PID: $pid)"
+    # 启动服务
+    eval "$jupiter_cmd" >jupiter-api.log 2>&1 &
+    sleep 2
+    
+    # 获取进程 PID
+    local pid=$(pgrep -f "jupiter-swap-api")
+    if [ -n "$pid" ]; then
+        echo $pid >jupiter.pid
+        log_info "Jupiter 服务启动成功 (进程 PID: $pid)"
         return 0
-    else
-        log_error "Jupiter API 启动失败"
-        return 1
     fi
+    
+    log_error "Jupiter 服务启动失败"
+    return 1
 }
 
 # 监控进程并在崩溃时重启
@@ -150,62 +154,30 @@ monitor_and_restart() {
     touch .jupiter_running
 
     while [ -f .jupiter_running ]; do
-        start_jupiter_service
-        local parent_pid=$(cat jupiter.pid 2>/dev/null)
-        
-        if [ -n "$parent_pid" ]; then
-            log_info "监控 Jupiter 进程 (父进程 PID: $parent_pid)"
-            
-            # 等待父进程创建子进程
-            local max_wait=10
-            local waited=0
-            while [ $waited -lt $max_wait ]; do
-                local child_pid=$(pgrep -P "$parent_pid" 2>/dev/null)
-                if [ -n "$child_pid" ]; then
-                    log_info "检测到子进程 (PID: $child_pid)"
-                    break
-                fi
-                log_debug "等待子进程创建... ($waited/$max_wait)"
-                sleep 1
-                ((waited++))
-            done
-            
-            # 监控父进程和子进程
-            while true; do
-                # 检查父进程状态
-                if ! kill -0 "$parent_pid" 2>/dev/null; then
-                    log_warning "父进程 $parent_pid 已终止"
-                    break
-                fi
-                log_debug "父进程 $parent_pid 存活"
-
-                # 检查子进程状态
-                if [ -n "$child_pid" ]; then
-                    if ! kill -0 "$child_pid" 2>/dev/null; then
-                        log_warning "子进程 $child_pid 已终止"
-                        break
-                    fi
-                    log_debug "子进程 $child_pid 存活"
-                fi
-
-                # 打印进程状态
-                log_debug "进程状态："
-                ps -f -p "$parent_pid" "$child_pid" 2>/dev/null >&2
-                
-                sleep 5
-            done
-            
-            log_warning "检测到进程终止，准备重启..."
-            # 确保清理所有相关进程
-            log_debug "清理子进程..."
-            pkill -P "$parent_pid" 2>/dev/null
-            log_debug "清理父进程..."
-            kill -9 "$parent_pid" 2>/dev/null
-        else
-            log_error "无法获取 Jupiter PID"
+        # 尝试启动服务
+        if ! start_jupiter_service; then
+            log_error "Jupiter 服务启动失败，等待重试..."
+            sleep 5
+            continue
         fi
-        
-        log_debug "等待进程完全退出..."
+
+        # 获取并验证 PID
+        local pid=$(cat jupiter.pid 2>/dev/null)
+        if [ -z "$pid" ] || ! kill -0 "$pid" 2>/dev/null; then
+            log_error "无法获取有效的进程 PID"
+            cleanup
+            sleep 2
+            continue
+        fi
+
+        # 监控进程
+        log_info "开始监控 Jupiter 服务 (PID: $pid)"
+        while kill -0 "$pid" 2>/dev/null; do
+            sleep 5
+        done
+
+        log_warning "Jupiter 服务已停止，准备重启..."
+        cleanup
         sleep 2
     done
 }
