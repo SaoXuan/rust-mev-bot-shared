@@ -181,9 +181,9 @@ cleanup() {
 
     if [ "$is_exit" = "true" ]; then
         echo ""
-        log_info "正在终止所有进程..."
+        log_error "正在终止所有进程..."
     else
-        log_info "Restart Task On ..."
+        log_error "——————Restart Task On——————"
     fi
     ./kill-process.sh
     if [ "$is_exit" = "true" ]; then
