@@ -31,27 +31,36 @@ log_debug() {
 }
 
 # 清理函数
-cleanup() {
-    # 确保清理所有相关进程
-    if [ -f jupiter.pid ]; then
-        local pid=$(cat jupiter.pid)
-        if [ -n "$pid" ]; then
-            kill -9 "$pid" 2>/dev/null
-            rm -f jupiter.pid
-        fi
-    fi
-    ./kill-process.sh
-}
-
 cleanup_and_exit() {
-    cleanup
+    # 传入 true 参数以保留监控进程
+    kill_process_by_name "jupiter-swap-api"
     rm -f .jupiter_running
     exit 0
 }
 
+
+
+# 通过进程名称杀死进程
+kill_process_by_name() {
+    local process_name="$1"
+    local pids=$(pgrep -f "$process_name")
+
+    if [ -n "$pids" ]; then
+        log_info "找到 $process_name 进程，PID: $pids"
+        for pid in $pids; do
+            if kill -0 "$pid" 2>/dev/null; then
+                log_info "正在停止进程 $pid..."
+                kill -15 "$pid" 2>/dev/null || kill -9 "$pid" 2>/dev/null
+            fi
+        done
+    else
+        log_warning "没有找到 $process_name 相关的进程"
+    fi
+}
+
+
 # 设置信号处理
-trap cleanup SIGINT SIGTERM SIGHUP
-trap cleanup_and_exit SIGINT SIGTERM
+trap cleanup_and_exit SIGINT SIGTERM SIGHUP
 
 # 设置系统文件描述符限制
 ulimit -n 100000
@@ -135,7 +144,8 @@ start_jupiter_service() {
 
     # 启动服务
     eval "$jupiter_cmd" >jupiter-api.log 2>&1 &
-    sleep 2
+    # 增加启动延迟
+    sleep 5
     
     # 获取进程 PID
     local pid=$(pgrep -f "jupiter-swap-api")
@@ -152,20 +162,34 @@ start_jupiter_service() {
 # 监控进程并在崩溃时重启
 monitor_and_restart() {
     touch .jupiter_running
+    local retry_count=0
+    local max_retries=5  # 最大重试次数
+    local retry_interval=60  # 重试间隔（秒）
 
     while [ -f .jupiter_running ]; do
-        # 尝试启动服务
+        rm -f jupiter.pid
+        
+        # 检查重试次数
+        if [ $retry_count -ge $max_retries ]; then
+            log_error "达到最大重试次数($max_retries)，等待 $retry_interval 秒后重置计数..."
+            sleep $retry_interval
+            retry_count=0
+        fi
+
         if ! start_jupiter_service; then
-            log_error "Jupiter 服务启动失败，等待重试..."
+            ((retry_count++))
+            log_error "Jupiter 服务启动失败 (尝试 $retry_count/$max_retries)..."
             sleep 5
             continue
         fi
+
+        # 启动成功，重置重试计数
+        retry_count=0
 
         # 获取并验证 PID
         local pid=$(cat jupiter.pid 2>/dev/null)
         if [ -z "$pid" ] || ! kill -0 "$pid" 2>/dev/null; then
             log_error "无法获取有效的进程 PID"
-            cleanup
             sleep 2
             continue
         fi
@@ -176,8 +200,13 @@ monitor_and_restart() {
             sleep 5
         done
 
-        log_warning "Jupiter 服务已停止，准备重启..."
-        cleanup
+        log_error "Jupiter 服务已停止，准备重启..."
+        # 添加诊断信息
+        if [ -f "jupiter-api.log" ]; then
+            log_warning "最后的日志输出:"
+            tail -n 5 jupiter-api.log
+            log_error "---------------重启中-----------------"
+        fi
         sleep 2
     done
 }
