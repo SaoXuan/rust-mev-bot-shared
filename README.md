@@ -4,7 +4,8 @@
 
 ## 🔴  [必读小白教程文档](https://rust-mev-bot.solboxs.com/)
 https://rust-mev-bot.solboxs.com/
-
+## 整体架构
+![alt text](image.png)
 ## 核心优势
 - 自动化套利交易
 - 多jito引擎节点并行处理
