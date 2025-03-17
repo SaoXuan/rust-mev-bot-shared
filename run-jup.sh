@@ -193,7 +193,6 @@ monitor_and_restart() {
             sleep 2
             continue
         fi
-
         # 监控进程
         log_info "开始监控 Jupiter 服务 (PID: $pid)"
         while kill -0 "$pid" 2>/dev/null; do
