@@ -32,7 +32,7 @@ fi
 if [ -n "$version" ]; then
     # 提供了版本参数
     echo "📦 检测到版本参数: $version"
-    download_link="https://sourceforge.net/projects/$project_name/files/solana-mev-bot-$version.zip"
+    download_link="https://sourceforge.net/projects/$project_name/files/rust-mev-bot-$version.zip"
 
     echo "🌐 构建下载链接: $download_link"
 
