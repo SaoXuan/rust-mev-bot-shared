@@ -119,11 +119,35 @@ only_direct_routes: false
 check_transaction_size: false
 #是否开启动态计算预算,建议开启
 dynamic_compute_unit_limit: true
+# 单跳交易给的cu预算，单位为cu，默认8w
+single_swap_compute_unit_limit: 80000
+# 您为闪电贷款设置的计算预算，单位为cu，默认10w,如果当前交易有闪电贷，那么会自动加上预算
+loan_compute_unit_limit: 100000
 #计算预算百分比，设置这个值是因为，模拟后的cu可能偏大，可以设置百分比二次修改cu限制，近一步降低cu限制
 cu_limit_percentage: 0.98
-#计算预算，在开启动态预算的时候不生效
-compute_unit_limit: 300000
+
 #一个交易中支持的最大账户数
 max_account_limit: 24
 #是否开启kamino借贷
 enable_kamino: true
+
+
+#________________盲发相关内容_______________________
+blind_send_trade: false
+#盲发预期利润,会按照这个利润一直发送交易 sol lamports
+blind_expect_min_profit_threshold: 5000
+#盲发预期利润百分比,预期利润百分比开启后，固定blind_expect_min_profit_threshold 将失效，按照交易额度来控制给jito的小费比率，也就是
+#毛利润 = 交易额 *(1+blind_expect_profit_percent)
+#jito 小费 = 毛利 * static_tip_percentage，建议保守和冲刺都要有，找机会
+#是否开启盲发
+blind_expect_profit_percent:
+  - 0.000001 # 超保守策略: 交易100 SOL，预期利润0.0001 SOL (≈$0.007)  =>  约 $0.13
+  - 0.000002 # 超保守策略: 交易100 SOL，预期利润0.0002 SOL (≈$0.014) =>  约 $0.26
+  - 0.000005 # 超保守策略: 交易100 SOL，预期利润0.0005 SOL (≈$0.035) => 约 $0.65
+  - 0.00001 # 保守策略: 交易100 SOL，预期利润0.001 SOL (≈$0.07) =>  约 $1.30
+  - 0.00002 # 保守策略: 交易100 SOL，预期利润0.002 SOL (≈$0.14) => 约 $2.60
+  - 0.00005 # 保守策略: 交易100 SOL，预期利润0.005 SOL (≈$0.35) => 约 $6.50
+  - 0.0001 # 中等策略: 交易100 SOL，预期利润0.01 SOL (≈$0.7) =>  约 $13.00
+  - 0.0002 # 中等策略: 交易100 SOL，预期利润0.02 SOL (≈$1.4) =>  约 $26.00
+  - 0.0005 # 中等策略: 交易100 SOL，预期利润0.05 SOL (≈$3.5) =>  约 $65.00
+  - 0.001 # 相对激进: 交易100 SOL，预期利润0.1 SOL (≈$7.0) =>  约 $130.00
