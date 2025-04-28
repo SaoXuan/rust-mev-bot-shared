@@ -10,7 +10,6 @@ readonly COLOR_GREEN='\033[0;32m'
 readonly COLOR_YELLOW='\033[1;33m'
 readonly COLOR_BLUE='\033[0;34m'
 readonly COLOR_RESET='\033[0m'
-
 # 日志函数
 log_info() {
     echo -e "${COLOR_GREEN}[INFO]${COLOR_RESET} $1" >&2
