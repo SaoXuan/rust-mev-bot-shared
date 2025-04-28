@@ -1,6 +1,6 @@
 # Solana MEV 套利机器人简介
 
-基于 Rust 开发的高性能 Solana MEV 套利机器人，支持 Jupiter 聚合器和 Jito Bundle，专注与Jito套利，性能这方面无人能敌YYDS
+基于 Rust 开发的高性能 Solana MEV 套利机器人，支持 Jupiter 聚合器和 Jito Bundle，专注与Jito套利，性能这方面无人能敌YYDS。官网：https://www.solboxs.com/
 
 ## 🔴  [必读小白教程文档](https://rust-mev-bot.solboxs.com/)
 https://rust-mev-bot.solboxs.com/
@@ -37,7 +37,7 @@ https://rust-mev-bot.solboxs.com/
 - [Vultr](https://www.vultr.com/)
 - [RackNerd](https://www.racknerd.com/)
 
-### 推荐RPC & GRPC服务商
+### 推荐RPC & GRPC服务商(非常不推荐使用，量不够用，还限速，建议前期拼车)
 - [Helius](https://www.helius.dev/) - RPC/Yellowstone
 - [Quicknode](https://www.quicknode.com/?via=cetipo) - RPC/Jup API
 - [Shyft](https://shyft.to/) - RPC/Jup API
