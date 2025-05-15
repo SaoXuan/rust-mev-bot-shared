@@ -86,8 +86,8 @@ trade_range_strategy:
       size: 10      # 
 #发送交易类型，建议选择Mixed，可选Rpc,Grpc,Mixed，选择Mixed可以让你的ip限制速率翻倍
 rpc_type: Mixed
-#blockhash rpc类型，建议选择Rpc，可选Grpc,Rpc，当前实现Grpc不是订阅的，等改成订阅的再选用Grpc
-blockhash_rpc_type: Rpc
+#blockhash rpc类型，建议选择Grpc，可选Grpc,Rpc,走数据订阅模式
+blockhash_rpc_type: Grpc
 
 #是否开启block缓存，建议开启
 blockhash_cache_enabled: true
