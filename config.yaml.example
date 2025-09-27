@@ -2,8 +2,6 @@
 jup_exclude_dex_program_ids:
   - "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P"
   - "MoonCVVNZFSYkqNXP6bxHLPL6QQJiMagDL3qcqUQTrG"
-#jupiter绑定的ip，建议设置为127.0.0.1，如果设置为0.0.0.0，则jupiter会绑定所有ip，可能会被别人扫描到，调用你的服务
-jup_bind_local_host: 127.0.0.1
 #jupiter的本地端口
 jupiter_local_port: 18080
 #是否禁用本地jupiter
@@ -13,80 +11,86 @@ jupiter_use_local_cache: false
 #jupiter的market模式，建议选择remote
 jupiter_market_mode: "remote"
 #jupiter的webserver线程数
-jupiter_webserver: 4
+jupiter_webserver: 24
 #jup的更新线程数
-jupiter_update: 4
+jupiter_update: 5
 #jupiter的总线程数
-total_thread_count: 16
+total_thread_count: 64
 #自动重启时间，设置为0不会重启，单位为分钟
-auto_restart: 30
+auto_restart: 60
+jupiter_skip_user_accounts_rpc_calls: true # 是否跳过用户账户rpc调用
 #________________以上为jup相关配置内容_______________
 # 是否禁用本地bot启动
 disable_local_bot: false
 # grpc token，如果你得gprc有token验证，可以在这里配置上
 yellowstone_grpc_token: ""
 # 从birdeye api 加载代币，最大加载50个代币,需要自己配置key，可以去注册一个账号key免费https://bds.birdeye.so/
-load_mints_from_birdeye_api_max_mints: 50
-birdeye_api_key: ""
+#load_mints_from_birdeye_api_max_mints: 0
+#birdeye_api_key: "01f1c2e4144f45cc8c147f9a55f66b77"
 #你的私钥数组，系统启动后会在当前目录下生成一个PRIVATEKEY文件，里面是加密后的私钥，虽然做了加密，但是还是要小心，不要泄露，系统启动后会将此项配置删除，不在服务器上储存私钥
 private_key: ""
 #solana rpc url
-rpc_url: "http://xxx"
-yellowstone_grpc_url: "http://xxx"
-jupiter_api_url: "http://127.0.0.1:18080"
-# Jito MEV-Block-Engine 节点配置列表，建议配置上多个节点，随机选择一个节点进行交易，这样的你的QPS会有提升，尽量选择几个距离你比较近的节点，当然全发也可以，目测日本较慢，会降低整体效率,如果节点不在该区可以注释掉,
+rpc_url: "http://xxxx"
+yellowstone_grpc_url: "http://xxxx"
+jupiter_api_url: "http://xxxx"
+# Jito MEV-Block-Engine 节点配置列表，建议配置上多个节点，随机选择一个节点进行交易，这样的你的QPS会有提升，尽量选择几个距离你比较近的节点，当然全发也可以，目测日本较慢，会降低整体效率,如果想追求速度，那么jito的引擎只开本区域，你会起飞
 jito_engine:
-   - NL # 荷兰阿姆斯特丹节点
-   - DE      # 德国法兰克福节点
-   - NY      # 美国纽约节点
-   - SLC     # 美国盐湖城节点
-   #- Tokyo   # 日本东京节点
+  - "http://xxxx"
+#   - NL # 荷兰阿姆斯特丹节点
+#   - DE      # 德国法兰克福节点
+#   - NY      # 美国纽约节点
+#   - SLC     # 美国盐湖城节点
+#   - SG     # 新加坡
+#   - IE      #爱尔兰
+#   - LND     # 伦敦别忘记这个
+#   - Tokyo   # 日本东京节点
+#   - Main    #主节点
 #是否开启随机引擎，建议开启，随机引擎会随机选择一个节点进行交易，这样的你的QPS会有提升
 random_engine: true
-#jito配置UUID，没怎么测试，建议先不要用,使用多ip的方法，而不是配置uuid
-#jito_uuid: ""
-#自定义从url加载代币,返回值应该是["xx","xx"] 这样的格式，否则无法解析，可以从jup加载，比如：http://127.0.0.1:18080/tokens
-#load_mints_from_url: ""
+
+
+jito_uuid_config:
+  - uuid: "xxxx"
+    rate_limit: 10
+#从url加载代币，可以从你的jup加载代币，你的jup加载了什么币，会拉到bot内。如果从其他地方拉取，需要和jup返回结构抱持一致，建议从jup加载代币
+load_mints_from_url: "xxxx"
 #从文件加载代币
-#intermediate_tokens_file: "./test.json"
+intermediate_tokens_file: "./test.json"
 #从配置文件加载代币
 intermediate_tokens:
-  - "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"
   - "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+  - "So11111111111111111111111111111111111111112"
   # 排除的币种
 not_support_tokens:
+#  - "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+#  - "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"
 #最大代币数量，如果低于最大限制的60%会一直请求load_mints_form_url，直到达到目标才会运行起来，主要是为了链接jup 的时候jup还没加载好全部的代币
-max_tokens_limit: 80
+max_tokens_limit: 50
 #最小利润阈值
-min_profit_threshold: 1000
+min_profit_threshold: 10
 #最大tip限制，单位lamports，给jito的最大限制
-max_tip_lamports: 100000000
-#静态tip百分比，给jito的tip百分比
-static_tip_percentage: 0.7501
+max_tip_lamports: 1000000000
 #交易memo，可以不设置
-memo: ""
-#建议先从小的开始0.1-1s，不要设置太多，影响性能
-#trade_range:
-#  - 0.1
-#  - 0.2
-#  - 0.3
-#  - 0.4
-#  - 0.5
-#  - 0.6
-#  - 0.7
-#  - 0.8
-#  - 0.9
-#  - 1.0
+memo: "Net1"
+#随机后缀memo
+memo_auto_random_additional: true
+
+# 默认为wsol,如果是sol的话那就是1e9，如果是usdt 的话那么是1e6
+base_mint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+#建议先从小的开始0.1-1s，设置很多不会影响性能，性能主要由线程和网络io决定
+trade_range:
+  - 10
 trade_range_strategy:
   enable_strategy: true
   ranges:
-    - from: 0.1    # 1 SOL
-      to: 2     # 40SOL
-      step: 0.05
-      size: 10      # 
+    - from: 1 # 1 SOL
+      to: 30 # 40SOL
+      step: 1
+      size: 10 #
+
 #发送交易类型，建议选择Mixed，可选Rpc,Grpc,Mixed，选择Mixed可以让你的ip限制速率翻倍
-rpc_type: Mixed
-#blockhash rpc类型，建议选择Grpc，可选Grpc,Rpc,走数据订阅模式
+rpc_type: Rpc
+#blockhash rpc类型，建议选择Rpc，可选Grpc,Rpc，当前实现Grpc不是订阅的，等改成订阅的再选用Grpc
 blockhash_rpc_type: Grpc
 
 #是否开启block缓存，建议开启
@@ -94,58 +98,153 @@ blockhash_cache_enabled: true
 #block缓存过期时间，单位ms，缓存1s没啥问题，降低下节点压力
 blockhash_cache_ttl_ms: 1000
 #性能相关，开启多少个线程,系统负载全靠这个控制
-thread_count: 6
+thread_count: 32
 #每个线程里多少个网络IO，可以一个线程配2个左右，具体看性能，自行调试，作者也不知道多少是好的
-max_concurrent: 4
-
+max_concurrent: 2
 #日志相关能力
 log_rate_limit: false
 #打印机会
 log_opportunities: false
 #打印交易执行
 log_trade_execution: false
+# 是否打印cu计算日志默认false
+log_cu_calculator: false
 #是否开启单独钱包
 enable_separate_wallet: true
-
-#ip 配置信息，如果有多IP可以在这里配置，否则使用本机IP，建议配置上多IP，如果有请取消注释，并配置上,需要先在/etc/netplan 下配置上ip，然后重启网络
-# ip_addrs:
-#   - "xxxx"
+#单独小费钱包数量,默认2000个，如果你有更多IP，你可以添加更多
+separate_wallet_size: 1000
 #jup 调优
-#是否只使用单跳，如果要使用多跳，可以打开多跳，可能会有更多机会，但是会jup quote 的会慢一点
+#是否只使用单跳
 only_direct_routes: false
+#限制中间代币为顶级代币，建议开启，此参数也就是在多跳的时候有用，现在多跳没那么好使，先这样
+restrict_intermediate_tokens: true
 #是否预检交易大小，先暂时关闭，这个只对多跳有用，等待后续开发
 check_transaction_size: false
-#是否开启动态计算预算,建议开启
-dynamic_compute_unit_limit: true
-# 单跳交易给的cu预算，单位为cu，默认8w
-single_swap_compute_unit_limit: 80000
-# 您为闪电贷款设置的计算预算，单位为cu，默认10w,如果当前交易有闪电贷，那么会自动加上预算
-loan_compute_unit_limit: 100000
-#计算预算百分比，设置这个值是因为，模拟后的cu可能偏大，可以设置百分比二次修改cu限制，近一步降低cu限制
-cu_limit_percentage: 0.98
 
-#一个交易中支持的最大账户数
-max_account_limit: 24
-#是否开启kamino借贷
-enable_kamino: true
+#________________以下为cu相关配置信息,此版本新增_______________
+compute_config:
+  dynamic_compute: false # 是否开启动态计算预算
+  loan_compute_unit_limit: 100000 # 闪电贷cu消耗
+  max_cu_limit: 1000000 # 最大cu限制为100w
+  no_dex_config_cu_limit: 80000 # 不指定dex的cu限制
+  jup_contract_cu_limit: 20000 # jup 合约的cu限制
+  bot_contract_cu_limit: 10000 # bot 合约的cu限制，默认1w cu
+
+# 监控相关配置，prometheus 采集指标，可以自行配置
+metrics_port: 9090
+
+# 代理配置
+proxy_config:
+  enable_proxy: true
+  proxy_type: "socks5" # 代理类型，可选为http, https, socks5
+  proxy_username: ""
+  proxy_password: ""
+  proxy_addrs:
+    - "172.18.96.1:7890"
 
 
-#________________盲发相关内容_______________________
-blind_send_trade: false
-#盲发预期利润,会按照这个利润一直发送交易 sol lamports
-blind_expect_min_profit_threshold: 5000
-#盲发预期利润百分比,预期利润百分比开启后，固定blind_expect_min_profit_threshold 将失效，按照交易额度来控制给jito的小费比率，也就是
-#毛利润 = 交易额 *(1+blind_expect_profit_percent)
-#jito 小费 = 毛利 * static_tip_percentage，建议保守和冲刺都要有，找机会
-#是否开启盲发
-blind_expect_profit_percent:
-  - 0.000001 # 超保守策略: 交易100 SOL，预期利润0.0001 SOL (≈$0.007)  =>  约 $0.13
-  - 0.000002 # 超保守策略: 交易100 SOL，预期利润0.0002 SOL (≈$0.014) =>  约 $0.26
-  - 0.000005 # 超保守策略: 交易100 SOL，预期利润0.0005 SOL (≈$0.035) => 约 $0.65
-  - 0.00001 # 保守策略: 交易100 SOL，预期利润0.001 SOL (≈$0.07) =>  约 $1.30
-  - 0.00002 # 保守策略: 交易100 SOL，预期利润0.002 SOL (≈$0.14) => 约 $2.60
-  - 0.00005 # 保守策略: 交易100 SOL，预期利润0.005 SOL (≈$0.35) => 约 $6.50
-  - 0.0001 # 中等策略: 交易100 SOL，预期利润0.01 SOL (≈$0.7) =>  约 $13.00
-  - 0.0002 # 中等策略: 交易100 SOL，预期利润0.02 SOL (≈$1.4) =>  约 $26.00
-  - 0.0005 # 中等策略: 交易100 SOL，预期利润0.05 SOL (≈$3.5) =>  约 $65.00
-  - 0.001 # 相对激进: 交易100 SOL，预期利润0.1 SOL (≈$7.0) =>  约 $130.00
+# back run 配置，主要用于触发大单监控后，只quote相关的dex，进行针对性交易
+back_run_config:
+  enabled: false
+  enable_log: false
+  monitor_trade_type: "All" # 监听的交易类型，默认为all，可选为MevSwap，NormalSwap，All
+  trigger_sol_amount: 1000 # 触发back run的sol数量，监听到有1000s 的交易大单后
+  trigger_continue_sec: 60 # 触发back run后持续quote大金额时间 秒为单位
+  trigger_and_quote_min_amount: 1 # 触发back run后，最小交易金额sol 为单位，如果没有触发的时候，只quote此值一下的交易金额
+  trigger_and_use_blind_trade: true # 触发back run后，是否使用盲发交易，没咋用过，自行测试
+  trigger_and_quote_dexs: # 触发后只允许交易这些dex，可以不配置，我一般没配置，自行研究
+    - "TesseraV"
+    - "HumidiFi"
+    - "GoonFi"
+    - "Perps"
+  trigger_transction_must_include_addresses: [] #触发的时候必须包含的地址 此配置暂时不生效
+  #   - "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"
+  #   - "5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1"
+  monitor_addresses: # 监控哪些dex 的大单
+    - "TessVdML9pBGgG9yGks7o4HewRaXVAMuoVj4x83GLQH"
+  trigger_mints_include: # 触发backrun 后，只允许交易这些代币，否则直接跳过，可以填wsol 和usdc
+    - "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+
+
+
+# 程序控制相关配置
+bot_config:
+  only_quote_dexs: [] # 只允许交易这些dex，这个优先级最高，一般不要配置
+#    - "TesseraV"
+#    - "HumidiFi"
+  enable_reverse_trade: true # 是否开启反向交易,也就是如果正向quote没有利润的话，那么就反向quote来交易，增加机会的发现率，默认false
+  enable_random_base_mint: false# 是否开启随机base mint，如果开启，那么会随机选择一个base mint进行交易,概率为usdc或者wsol
+  enable_sandwich_mitigation: true # 是否开启三明治保护，如果开启那么就不能使用单独小费钱包Bundle: [其他交易, 你的保护交易]  ❌ 整个 bundle 被拒绝
+  over_trade_process_delay_ms: 0 # 程序控制，所有交易额处理一遍后延时xx ms ，默认为0
+  static_tip_config:
+    enable_random: true # 是否开启随机小费，如果开启，那么会发送所有交易额的随机小费比率
+    static_tip_percentage: 0.75 # 如果不允许random 的情况下，那么只发送此小费比率
+    random_percentage: # 如果开启random 的情况下，那么会发送所有交易额的随机小费比率的交易
+      - 0.5
+      - 0.7
+      - 0.8
+
+# 盲发配置信息
+blind_config: 
+  only_quote_dexs: []
+  enabled: false
+  dynamic_au_jito_tip: false # 如果开启了，那么会自动订阅jito 的当前tip,否则使用静态小费
+  log_jito_tip_update: true # 是否打印jito tip数据
+  static_jito_tip: # 单位为lamports
+    - 305184
+    - 145252
+    - 225847
+  dynamic_jito_tip_percentile:  # 如果开启了，那么会自动订阅jito 的当前tip，P25,P50,P75,EMA_P50,按照实时tip进行盲发
+    - "P95"
+    - "P99"
+
+# 垃圾邮件策略，如果开启，并且达到相关触发值的话那么会启用垃圾邮件策略，所有的节点将都发送这个交易
+spam_config: # 垃圾交易相关配置
+  enabled: true
+  enable_trade_log: true
+  skip_preflight: true # 是否跳过预检
+  node1_config: # 服务商node1配置 目前一定要配置这个，还有点问题，没有完全解决，配置后续还需要再改动一下
+    enable: true # 是否开启
+    only_back_run_active: false # 是否只有back run 激活的时候才发送交易
+    url: "https://ams.node1.me"
+    api_key: "xxxx"
+    trigger_mint_profit_sol: 0.1 # 触发垃圾交易的利润阈值（SOL），会自动转换为lamports
+    gas_amount_sol: 0.002 # Gas费用（SOL），会自动转换为lamports
+    compute_unit_price_sol: 0.000001 # 本次交易正常gas 消耗为多少sol，会自动根据cu 计算出lamports
+  helius_config: # 服务商helius配置
+    enable: true # 是否开启
+    only_back_run_active: false # 是否只有back run 激活的时候才发送交易
+    url: "http://ams-sender.helius-rpc.com/fast"
+    trigger_mint_profit_sol: 0.1 # 触发垃圾交易的利润阈值（SOL），会自动转换为lamports
+    gas_amount_sol: 0.002 # Gas费用（SOL），会自动转换为lamports
+    compute_unit_price_sol: 0.000001 # 本次交易正常gas 消耗为多少sol，会自动根据cu 计算出lamports
+  astralane_config: # 服务商astralane配置
+    enable: true # 是否开启
+    only_back_run_active: false # 是否只有back run 激活的时候才发送交易
+    url: "http://ams.gateway.astralane.io/iris?api-key=xxxxxxx"
+    trigger_mint_profit_sol: 0.1 # 触发垃圾交易的利润阈值（SOL），会自动转换为lamports
+    gas_amount_sol: 0.002 # Gas费用（SOL），会自动转换为lamports
+    compute_unit_price_sol: 0.000001 # 本次交易正常gas 消耗为多少sol，会自动根据cu 计算出lamports
+  
+  normal_rpc_config: # 普通rpc配置，所有rpc 都会发送相同的一个交易，进行并行发送
+    enable: false # 是否开启
+    only_back_run_active: false # 是否只有back run 激活的时候才发送交易
+    compute_unit_price_sol: 0.000001 # 本次交易正常gas 消耗为多少sol，会自动根据cu 计算出lamports
+    trigger_mint_profit_sol: 0.2 # 触发垃圾交易的利润阈值（SOL），会自动转换为lamports
+    rpcs: 
+    - "https://mainnet.helius-rpc.com/?api-key=xxxxxx"
+  
+  # Nonce 账户配置，用于支持高频交易，多swqos 并发，最后只会有一笔gas 损失，如果开启spam策略建议打开
+  nonce_config:
+    enabled: true # 是否启用 nonce 功能
+    max_accounts: 3 # 最大nonce账户数量，如果启用且不足时会自动创建,并保存到本地文件
+    
+    
+# 大单策略，如果开启，那么会启用大单策略，大单策略会根据利润阈值进行交易
+big_profit_strategy:
+  enabled: false
+  trigger_mint_profit: 0.1 # 单位是sol，会自动转换为lamports
+  repeat_send_times: 2 # 发现大单后，重复发送交易的次数，因为有些交易可能呗ratelimit,多发大单没什么问题
+
+
+
