@@ -103,7 +103,9 @@ generate_jupiter_command() {
     cmd+=" --allow-circular-arbitrage"
     cmd+=" --enable-new-dexes"
     cmd+=" --expose-quote-and-simulate"
-
+	# 启动健康检查
+	cmd+=" --enable-markets --enable-tokens"
+	cmd+=" --metrics-port 18081"
     # 添加 Yellowstone 配置
     if [ -n "$yellowstone_url" ]; then
         cmd+=" --yellowstone-grpc-endpoint $yellowstone_url"
