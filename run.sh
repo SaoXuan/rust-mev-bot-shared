@@ -227,8 +227,6 @@ run_main_loop() {
 
 # 主函数
 main() {
-    # 先行设置资源限制
-    ulimit -n 65535
     # 解析命令行参数
     while [[ $# -gt 0 ]]; do
         case $1 in
