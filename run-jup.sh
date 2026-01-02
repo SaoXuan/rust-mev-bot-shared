@@ -83,44 +83,26 @@ generate_jupiter_command() {
     local yellowstone_token=$(yq -r '.yellowstone_grpc_token // ""' config.yaml)
     local port=$(yq -r '.jupiter_local_port // 18080' config.yaml)
     local market_mode=$(yq -r '.jupiter_market_mode // "remote"' config.yaml)
-    local rpc_threads=$(yq -r '.rpc_threads // .jupiter_rpc_threads // .jupiter_webserver // 2' config.yaml)
-    local router_update_threads=$(yq -r '.router_update_threads // .jupiter_router_update_threads // .jupiter_update // 4' config.yaml)
-    local quote_threads=$(yq -r '.quote_threads // "null"' config.yaml)
-    local total_thread_count=$(yq -r '.total_thread_count // "null"' config.yaml)
+    local rpc_threads=$(yq -r '.rpc_threads // 2' config.yaml)
+    local router_update_threads=$(yq -r '.router_update_threads // 4' config.yaml)
+    local quote_threads=$(yq -r '.quote_threads // 0' config.yaml)
     local host=$(yq -r '.jup_bind_local_host // "0.0.0.0"' config.yaml)
 
-    # 线程参数兼容旧配置并确保值有效
-    if ! [[ "$rpc_threads" =~ ^[0-9]+$ ]]; then
+    # 线程参数确保值有效
+    if ! [[ "$rpc_threads" =~ ^[0-9]+$ ]] || [ "$rpc_threads" -lt 1 ]; then
+        log_warning "rpc_threads 配置无效，重置为默认值 2"
         rpc_threads=2
     fi
-    if [ "$rpc_threads" -lt 1 ]; then
-        rpc_threads=1
-    fi
 
-    if [[ "$router_update_threads" == "null" ]] || ! [[ "$router_update_threads" =~ ^[0-9]+$ ]]; then
+    if ! [[ "$router_update_threads" =~ ^[0-9]+$ ]] || [ "$router_update_threads" -lt 1 ]; then
+        log_warning "router_update_threads 配置无效，重置为默认值 4"
         router_update_threads=4
     fi
-    if [ "$router_update_threads" -lt 1 ]; then
-        router_update_threads=1
-    fi
 
-    if [[ "$quote_threads" == "null" ]] || ! [[ "$quote_threads" =~ ^-?[0-9]+$ ]]; then
-        quote_threads=""
+    if ! [[ "$quote_threads" =~ ^-?[0-9]+$ ]]; then
+        log_warning "quote_threads 配置无效，重置为 0（自动）"
+        quote_threads=0
     fi
-
-    if [ -z "$quote_threads" ]; then
-        if [[ "$total_thread_count" =~ ^[0-9]+$ ]]; then
-            local derived_quote_threads=$((total_thread_count - rpc_threads - router_update_threads))
-            if [ "$derived_quote_threads" -lt 1 ]; then
-                derived_quote_threads=1
-            fi
-            quote_threads=$derived_quote_threads
-            log_info "根据 total_thread_count 推导 quote_threads=$quote_threads"
-        else
-            quote_threads=0
-        fi
-    fi
-
     if [ "$quote_threads" -lt 0 ]; then
         quote_threads=0
     fi
