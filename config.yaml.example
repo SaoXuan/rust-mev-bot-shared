@@ -10,12 +10,12 @@ jupiter_disable_local: false
 jupiter_use_local_cache: false
 #jupiter的market模式，建议选择remote
 jupiter_market_mode: "remote"
-#jupiter的webserver线程数
-jupiter_webserver: 24
-#jup的更新线程数
-jupiter_update: 5
-#jupiter的总线程数
-total_thread_count: 64
+#Jupiter RPC线程数（旧名webserver-thread-count，至少1）
+rpc_threads: 24
+#Jupiter路由更新线程数（旧名update-thread-count，至少1）
+router_update_threads: 5
+#报价线程数（0=自动=CPU总数-rpc-router，>=1时固定大小）
+quote_threads: 35
 #自动重启时间，设置为0不会重启，单位为分钟
 auto_restart: 60
 jupiter_skip_user_accounts_rpc_calls: true # 是否跳过用户账户rpc调用
