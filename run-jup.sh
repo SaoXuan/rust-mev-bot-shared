@@ -114,8 +114,6 @@ generate_jupiter_command() {
 
     # 构建命令
     cmd+=" --rpc-url $rpc_url"
-    #cmd+=" --market-cache https://cache.jup.ag/markets?v=4"
-    #cmd+=" --market-mode $market_mode"
     cmd+=" --port $port"
     cmd+=" --host $host"
     cmd+=" --allow-circular-arbitrage"
