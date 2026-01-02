@@ -106,7 +106,6 @@ generate_jupiter_command() {
     if [ "$quote_threads" -lt 0 ]; then
         quote_threads=0
     fi
-
     # 检查必要的配置
     if [ -z "$rpc_url" ]; then
         log_error "RPC URL 未配置"
